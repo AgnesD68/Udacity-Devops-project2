@@ -80,8 +80,8 @@ Resources:
         Type: AWS::ElasticLoadBalancingV2::LoadBalancer
         Properties:
           Subnets:
-          - Fn::ImportValue: !Sub "${EnvironmentName}-Public Subnet (AZ1)"
-          - Fn::ImportValue: !Sub "${EnvironmentName}-Public Subnet (AZ2)"
+          - Fn::ImportValue: !Sub "${EnvironmentName}-PUB1-SN"
+          - Fn::ImportValue: !Sub "${EnvironmentName}-PUB2-SN"
           SecurityGroups: 
           - Ref: LBSecurityGroup        
   Listener:
@@ -120,4 +120,53 @@ Resources:
           VpcId: 
             Fn::ImportValue:
               Fn::Sub: "${EnvironmentName}-VPCID"
-               
+Outputs:
+
+    LBSecurityGroup:
+        Description: A reference to the created  LBSecurityGroup:
+        Value: !Ref  LBSecurityGroup:
+        Export:
+          Name: !Sub ${EnvironmentName}-VPCID
+
+      ServerSecurityGroup:
+        Description: ServerSecurityGroup:
+        Value: !Ref   ServerSecurityGroup:
+        Export:
+          Name: !Sub ${EnvironmentName}-VPCID
+
+    WebAppLaunchConfig:
+        Description: WebAppLaunchConfig
+        Value: !Ref WebAppLaunchConfig
+        Export:
+          Name: !Sub ${EnvironmentName}-PRI1-RT
+
+    WebAppGroup:
+        Description: AutoScalingGroup
+        Value: !Ref WebAppLaunchConfig
+        Export:
+          Name: !Sub ${EnvironmentName}-PRIV-NETS
+
+    WebAppLB:
+        Description: ElasticLoadBalancing
+        Value: !Ref LBSecurityGroup
+        Export:
+          Name: !Sub ${EnvironmentName}-PUB1-SN
+          Name: !Sub ${EnvironmentName}-PUB2-SN
+
+    Listener:
+        Description: Listener
+        Value: !Ref WebAppLB
+        Export:
+          Name: !Sub ${EnvironmentName}-PRIV-NETS
+
+    ALBListenerRule:
+        Description: ListenerRule
+        Value: !Ref WebAppTargetGroup
+        Export:
+          Name: !Sub ${EnvironmentName}-PUB1-SN
+
+    WebAppTargetGroup: 
+        Description: WebAppTargetGroup
+        Value: !Ref TargetGroup
+        Export:
+          Name: !Sub ${EnvironmentName}-VPCID
